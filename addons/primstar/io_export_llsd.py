@@ -40,7 +40,7 @@ class ExportLLSD(bpy.types.Operator):
 
     version = bpy.props.EnumProperty(name='Version',
         items=(
-            ('3', '3', 'Primstar 2 comaptible viewers'),
+            ('3', '3', 'MoMoSculpt compatible viewers'),
             ('2', '2', 'Phoenix viewer'),
             ('1', '1', 'Imprudence viewer')),
             description='LLSD version to use for XML files',

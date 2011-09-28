@@ -17,15 +17,15 @@
 # ##### END GPL LICENSE BLOCK #####
 
 bl_info = {
-    "name": "Primstar",
-    "author": "Domino Marama, published by Machinimatrix",
+    "name": "MoMoSculpt",
+    "author": "Domino Marama, Soraya Elcar, originally published by Machinimatrix",
     "version": (2, 'dev', 167),
     "blender": (2, 5, 7),
     "api": 36147,
     #"location": "View3D > Add",
     "description": "Adds support for Second Life primitives",
-    "wiki_url": "http://wiki.machinimatrix.org/index.php/Primstar-2/",
-    "tracker_url": "https://bugs.launchpad.net/primstar",
+    #"wiki_url": "http://wiki.machinimatrix.org/index.php/Primstar-2/",
+    #"tracker_url": "https://bugs.launchpad.net/primstar",
     "category": "Object"}
 
 if "bpy" in locals():
@@ -146,7 +146,7 @@ def menu_export_llsd(self, context):
 def register():
     bpy.utils.register_module(__name__)
     library.register()
-    config_path = bpy.utils.user_resource('CONFIG', 'primstar')
+    config_path = bpy.utils.user_resource('CONFIG', 'momosculpt')
     if os.path.exists(config_path):
         print("do config")
     bpy.types.VIEW3D_MT_edit_mesh_specials.append(menu_rasterize)
