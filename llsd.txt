@@ -1,0 +1,206 @@
+This file is a work in progress by Domino Marama. It currently contains notes
+for the implementation of LLSD import and export.
+
+Eventually it will fully document the LLSD structure of exported and
+importable XML files for the Primstar 2 series of Blender scripts.
+
+Currently I am working through the Linden labs code base for viewer_development
+looking at toLLSD and fromLLSD functions to see what is already implemented
+and making notes of what extra features may be needed.
+
+Besides the standard LLSD data, we will need various additions to handle
+extra information that may be required by any import and export routines.
+Where possible, standard viewer code funtions asLLSD and fromLLSD
+will be utilised.
+
+== Export Section ==
+
+To allow changes and software which may not fully handle the exported LLSD
+files, we should keep a record of which software created the LLSD file. This
+would be the first section in the LLSD file and would be titled 'export'
+
+software - the software that generated this LLSD file
+software_version - the software version that generated this LLSD file
+grid - the source grid ('offline' for offline created content)
+creator UUID (for SL grids this would be the object owner)
+contributors (list) UUID + Avatar info (See indra/llavatarname.cpp below)
+
+license - ideally we need this per contributor, unfortunately there's no way to
+get this automatically currently. It may be worth leaving in for offgrid transfers
+of LLSD assets. It would refer to a real world license, such as the Creative
+Common ones.
+
+== Notes from viewer_development code base ==
+
+= Source : indra/llcommon/llavatarname.cpp =
+
+LLAvatarName::asLLSD()
+username
+display_name
+legacy_first_name
+legacy_last_name
+is_display_name_default
+display_name_expires
+display_name_next_update
+
+- we need UUID for the avatar also
+
+Of these fields, only username is essential though the display_name fields may
+be useful if used to maintain a common identity across grids.
+
+Other grids allow exports of objects by other avatars so we need a way to keep
+a record of who created what. Rather than store this info per prim, we should
+include a contibutors section indexed by UUID. As this will only be used for
+reference purposes and not for creating data, it should go into the export
+section of the LLSD file.
+
+= Source : indra/llmessage/llpartdata.cpp =
+
+LLPartData::asLLSD()
+pdflags
+pdmaxage
+pdstartcolor
+peendcolor
+pdstartscale
+pdendscale
+
+This appears to be the LLSD for a single particle. This is of no use for export.
+To support particle systems in the export, we will need toLLSD and fromLLSD
+functions for LLPartSysData
+
+#TODO: LLPartSysData LLSD
+
+= Source : indra/llmath/llvolume.cpp =
+
+LLProfileParams::asLLSD()
+curve
+begin
+end
+hollow
+
+LLPathParams::asLLSD()
+curve
+begin
+end
+scale_x
+scale_y
+shear_x
+shear_y
+twist
+twist_begin
+radius_offset
+taper_x
+taper_y
+revolutions
+skew
+
+LLVolumeParams::asLLSD()
+path = LLPathParams
+profile = LLProfileParams
+
+These provide the LLSD data for volume primitives. All newly built primitives are
+based on the volume type. LLVolumeParams should be a subsection of llprimitive.
+
+= Source : indra/llprimitive/lltextureanim.cpp =
+
+LLTextureAnim::asLLSD()
+mode = enum
+	{
+		ON				= 0x01,
+		LOOP			= 0x02,
+		REVERSE			= 0x04,
+		PING_PONG		= 0x08,
+		SMOOTH			= 0x10,
+		ROTATE			= 0x20,
+		SCALE			= 0x40,
+	};
+face
+sizeX
+sizeY
+start
+length
+rate = frames per second
+
+Grrrr.... why not size_x, size_y for consistency!!! Oh well...
+
+= Source : indra/llprimitive/llprimitive.cpp =
+
+LLLightParams::asLLSD()
+color
+radius
+falloff
+cutoff
+
+LLFlexibleObjectData::asLLSD()
+air_friction
+gravity
+simulate_lod
+tension
+user_force
+wind_sensitivity
+
+LLSculptParams::asLLSD()
+texture
+type
+
+LLLightImageParams::asLLSD()
+texture
+params
+
+LLPrimitive will need asLLSD and fromLLSD methods adding.
+# TODO : LLPrimitive LLSD
+
+= Source : indra/llprimitive/llmediaentry.cpp =
+
+LLMediaEntry::asLLSD()
+alt_image_enable
+controls
+current_url
+home_url
+auto_loop
+auto_play
+auto_scale
+auto_zoom
+first_click_interact
+width_pixels
+height_pixels
+whitelist_enable
+whitelist (list) UUIDs
+perms_interact
+perms_control
+
+Not sure on whether any of that should be in the export.
+
+= Source : indra/llprimitive/lltextureentry.cpp =
+
+LLTextureEntry::asLLSD()
+imageid
+colors
+scales
+scalet
+offsets
+offsett
+imagerot
+bump
+fullbright
+media_flags
+if(hasMedia()) LLMediaEntry?
+glow
+
+This is a list subsection of LLPrimitive
+
+= Source : indra/llinventory/llsaleinfo.cpp =
+
+LLSaleInfo::asLLSD()
+sale_type
+sale_price
+
+= Source : indra/llinventory/llinventory.cpp
+
+Has an interesting comment:
+
+// Deleted LLInventoryItem::exportFileXML() and LLInventoryItem::importXML()
+// because I can't find any non-test code references to it. 2009-05-04 JC
+
+LLInventoryItem::asLLSD() exists, but it's not a quick read to see what the format is
+
