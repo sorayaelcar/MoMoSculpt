@@ -70,9 +70,9 @@ class ObjectBakeSculpt(bpy.types.Operator):
                     col.label(obj.name + ' (no sculpt map)', 'ERROR')
                 else:
                     col.label(obj.name)
-            if self.sculpties != []:
-                col.prop(self, 'use_objects')
-            layout.separator()
+                if self.sculpties != []:
+                    col.prop(self, 'use_objects')
+                layout.separator()
 
     def draw(self, context):
         layout = self.layout

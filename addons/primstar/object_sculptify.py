@@ -20,7 +20,7 @@
 
 import bpy
 
-from .sculpty import map_size, sculpt_type, map_pixels, wrap_type
+from .sculpty import map_size, sculpt_type, map_pixels
 from . import config
 from math import ceil, log
 
@@ -79,19 +79,9 @@ class ObjectSculptify(bpy.types.Operator):
         bpy.ops.object.mode_set(mode='EDIT')
         bpy.ops.uv.follow_active_quads(mode='EVEN')
         bpy.ops.uv.to_bounds()
-        bpy.ops.object.mode_set(mode='OBJECT')
-        wrap_u, wrap_v, poles, inverted = wrap_type(obj)
-        if wrap_v and not wrap_u:
-            for f in uvs['sculptie'].data:
-                for i in range(1, len(f.uv_raw), 2):
-                    f.uv_raw[i - 1], f.uv_raw[i] = f.uv_raw[i], 1.0 - f.uv_raw[i - 1]
-            wrap_u, wrap_v, poles, inverted = wrap_type(obj)
-        if inverted:
-            for f in uvs['sculptie'].data:
-                for i in range(1, len(f.uv_raw), 2):
-                    f.uv_raw[i - 1], f.uv_raw[i] = f.uv_raw[i - 1], 1.0 - f.uv_raw[i]
         uc = 0
         vc = 0
+        bpy.ops.object.mode_set(mode='OBJECT')
         for f in uvs.active.data:
             if len(f.uv) < 4:
                 self.report({'ERROR'},

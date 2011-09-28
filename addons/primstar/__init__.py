@@ -19,13 +19,12 @@
 bl_info = {
     "name": "Primstar",
     "author": "Domino Marama, published by Machinimatrix",
-    "version": (2, 'dev', 000),
+    "version": (2, 'dev', 167),
     "blender": (2, 5, 7),
     "api": 36147,
-    "location": "Various, see the manual at the wiki link for details",
+    #"location": "View3D > Add",
     "description": "Adds support for Second Life primitives",
-    "warning": "Early access version, not feature complete",
-    "wiki_url": "http://blog.machinimatrix.org/primstar-2/",
+    "wiki_url": "http://wiki.machinimatrix.org/index.php/Primstar-2/",
     "tracker_url": "https://bugs.launchpad.net/primstar",
     "category": "Object"}
 

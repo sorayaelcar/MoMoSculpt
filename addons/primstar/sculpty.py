@@ -994,7 +994,7 @@ def bake(object, scene, vmin=None, vmax=None, rename=False):
     return True
 
 
-def wrap_type(obj):
+def sculpt_type(obj):
     def about(v1, v2):
         p = 0.002
         v3 = v1 - v2
@@ -1031,20 +1031,20 @@ def wrap_type(obj):
         wrap_u = True
     else:
         wrap_u = False
-    if about(min(bottom), max(bottom)) and about(min(top), max(top)):
-        poles = True
-    else:
-        poles = False
-    inverted = max(bottom)[2] > min(top)[2]
-    return wrap_u, wrap_v, poles, inverted
-
-
-def sculpt_type(obj):    
-    wrap_u, wrap_v, poles, inverted = wrap_type(obj)
+    if wrap_v and not wrap_u:
+        # correct rotation
+        for f in obj.data.uv_textures['sculptie'].data:
+            uv = []
+            for u, v in f.uv:
+                uv.append(1.0 - v)
+                uv.append(1.0 - u)
+            f.uv_raw = uv
+        wrap_u, wrap_v = wrap_v, wrap_u
+        top, right, bottom, left = left, top, right, bottom
     if wrap_u:
         if wrap_v:
             sculpt_type = "TORUS"
-        elif poles:
+        elif about(min(bottom), max(bottom)) and about(min(top), max(top)):
             sculpt_type = "SPHERE"
         else:
             sculpt_type = "CYLINDER"
