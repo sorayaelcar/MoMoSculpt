@@ -19,14 +19,20 @@
 bl_info = {
     "name": "MoMoSculpt",
     "author": "Domino Marama, Soraya Elcar, originally published by Machinimatrix",
-    "version": (2, 'dev', 3),
+    "version": (2, 0, 6),
     "blender": (2, 5, 7),
     "api": 36147,
     #"location": "View3D > Add",
     "description": "Adds support for Second Life primitives",
-    #"wiki_url": "http://wiki.machinimatrix.org/index.php/Primstar-2/",
-    #"tracker_url": "https://bugs.launchpad.net/primstar",
+    "wiki_url": "https://github.com/sorayaelcar/MoMoSculpt/wiki",
+    "tracker_url": "https://github.com/sorayaelcar/MoMoSculpt/issues",
     "category": "Object"}
+
+try:
+    __import__('bpy')
+    inblender = True
+except(ImportError):
+    inblender = False
 
 if "bpy" in locals():
     import imp
@@ -41,7 +47,7 @@ if "bpy" in locals():
     imp.reload(mesh_from_map)
     imp.reload(io_export_llsd)
     imp.reload(config)
-else:
+elif inblender:
     from . import sculpty
     from . import add_mesh_uv_shape
     from . import properties_primitive
@@ -53,42 +59,43 @@ else:
     from . import mesh_from_map
     from . import io_export_llsd
     from . import config
+    import bpy
 
-import bpy
+
 import os
 
+if inblender:
+    class INFO_MT_mesh_add_uvshape(bpy.types.Menu):
+        bl_idname = "INFO_MT_mesh_add_uvshape"
+        bl_label = "UVShape"
 
-class INFO_MT_mesh_add_uvshape(bpy.types.Menu):
-    bl_idname = "INFO_MT_mesh_add_uvshape"
-    bl_label = "UVShape"
-
-    def draw(self, context):
-        layout = self.layout
-        layout.operator_context = 'INVOKE_REGION_WIN'
-        op = layout.operator("mesh.uv_shape_bricks_add",
-            icon='MOD_BUILD', text='Bricks')
-        op.subdivision_type = 'SIMPLE'
-        op.subdivision = 1
-        layout.operator("mesh.uv_shape_cone_add",
-            icon='MESH_CONE', text='Cone')
-        layout.operator("mesh.uv_shape_cylinder_add",
-            icon='MESH_CYLINDER', text='Cylinder')
-        layout.operator("mesh.uv_shape_hemisphere_add",
-            icon='MESH_CIRCLE', text='Hemisphere')
-        layout.operator("mesh.uv_shape_plane_add",
-            icon='MESH_GRID', text='Plane')
-        layout.operator("mesh.uv_shape_ring_add",
-            icon='MESH_CYLINDER', text='Ring')
-        layout.operator("mesh.uv_shape_sphere_add",
-            icon='MESH_UVSPHERE', text='Sphere')
-        op = layout.operator("mesh.uv_shape_star_add",
-            icon='MOD_PARTICLES', text='Star')
-        op.subdivision_type = 'SIMPLE'
-        op = layout.operator("mesh.uv_shape_steps_add",
-            icon='PARTICLEMODE', text='Steps')
-        op.subdivision_type = 'SIMPLE'
-        layout.operator("mesh.uv_shape_torus_add",
-            icon='MESH_TORUS', text='Torus')
+        def draw(self, context):
+            layout = self.layout
+            layout.operator_context = 'INVOKE_REGION_WIN'
+            op = layout.operator("mesh.uv_shape_bricks_add",
+                icon='MOD_BUILD', text='Bricks')
+            op.subdivision_type = 'SIMPLE'
+            op.subdivision = 1
+            layout.operator("mesh.uv_shape_cone_add",
+                icon='MESH_CONE', text='Cone')
+            layout.operator("mesh.uv_shape_cylinder_add",
+                icon='MESH_CYLINDER', text='Cylinder')
+            layout.operator("mesh.uv_shape_hemisphere_add",
+                icon='MESH_CIRCLE', text='Hemisphere')
+            layout.operator("mesh.uv_shape_plane_add",
+                icon='MESH_GRID', text='Plane')
+            layout.operator("mesh.uv_shape_ring_add",
+                icon='MESH_CYLINDER', text='Ring')
+            layout.operator("mesh.uv_shape_sphere_add",
+                icon='MESH_UVSPHERE', text='Sphere')
+            op = layout.operator("mesh.uv_shape_star_add",
+                icon='MOD_PARTICLES', text='Star')
+            op.subdivision_type = 'SIMPLE'
+            op = layout.operator("mesh.uv_shape_steps_add",
+                icon='PARTICLEMODE', text='Steps')
+            op.subdivision_type = 'SIMPLE'
+            layout.operator("mesh.uv_shape_torus_add",
+                icon='MESH_TORUS', text='Torus')
 
 
 def menu_add_uvshape(self, context):
