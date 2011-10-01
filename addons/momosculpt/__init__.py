@@ -19,7 +19,7 @@
 bl_info = {
     "name": "MoMoSculpt",
     "author": "Domino Marama, Soraya Elcar, originally published by Machinimatrix",
-    "version": (2, 'dev', 167),
+    "version": (2, 'dev', 3),
     "blender": (2, 5, 7),
     "api": 36147,
     #"location": "View3D > Add",
